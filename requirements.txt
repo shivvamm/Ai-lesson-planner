@@ -1,6 +1,7 @@
 Flask
 requests
 PyMuPDF
-reportlab
 Pillow
-streamlit
+weasyprint
+fitz
+markdown2

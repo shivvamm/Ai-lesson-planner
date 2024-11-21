@@ -6,14 +6,10 @@ import weasyprint
 import logging
 import requests
 from io import BytesIO
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image as ReportLabImage
-from reportlab.lib import colors
 from PIL import Image as PILImage
 import base64
 import fitz  # PyMuPDF
-from app.utils import extract_text_from_pdf, extract_key_concepts, generate_lesson_plan, generate_image_from_text, create_pdf, generate_class_activity,generate_introduction,generate_main_body,generate_illustration_descriptions,create_html
+from app.utils import extract_text_from_pdf, extract_key_concepts, generate_image_from_text, generate_class_activity,generate_introduction,generate_main_body,generate_illustration_descriptions,create_html
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -152,16 +148,3 @@ def download_lesson_plan_route():
         logger.error(f"Error: {e}")
         return jsonify(error=str(e)), 500
     
-@app.route('/generate_pdf', methods=['POST'])
-def generate_pdf():
-    data = request.get_json()
-    lesson_plan = data.get('lesson_plan')
-
-    if not lesson_plan:
-        return {'error': 'No lesson plan content provided'}, 400
-
-    # Create PDF from lesson plan content
-    pdf_buffer = create_pdf(lesson_plan)
-    
-    # Return PDF as a file response
-    return send_file(pdf_buffer, as_attachment=True, download_name='lesson_plan.pdf', mimetype='application/pdf')

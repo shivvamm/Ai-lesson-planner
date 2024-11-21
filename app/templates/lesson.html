@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lesson Plan</title>
-    <!-- Bootstrap CSS (for styling) -->
+    <script src="https://cdn.jsdelivr.net/gh/MarketingPipeline/Markdown-Tag/markdown-tag.js"></script>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -194,55 +194,6 @@
         <input type="hidden" name="regenerate_section" value="class_activity" />
         <button type="submit" class="btn btn-warning">
           Regenerate Class Activity
-        </button>
-      </form>
-      {% endif %} {% if key_concepts %}
-      <div class="instruction-header">
-        <p>
-          Please review the Key Concepts section. If needed, update it and
-          regenerate the section.
-        </p>
-      </div>
-      <h3 class="my-4">Key Concepts</h3>
-      <md id="key-concepts">{{ key_concepts | join('\n') }}</md>
-      <form action="/confirm_key_concepts" method="post">
-        <input
-          name="illustration_1"
-          value="{{ illustration_1_base64 }}"
-          type="hidden"
-        />
-        <input
-          name="illustration_2"
-          value="{{ illustration_2_base64 }}"
-          type="hidden"
-        />
-        <textarea
-          name="key_concepts"
-          style="display: none"
-          id="key-concepts-section"
-          class="form-control mb-3"
-          rows="6"
-        >
-{{ key_concepts | join('\n') }}</textarea
-        >
-        <input
-          type="hidden"
-          name="extracted_text"
-          value="{{ extracted_text }}"
-        />
-        <input type="hidden" name="introduction" value="{{ introduction }}" />
-        <input type="hidden" name="main_body" value="{{ main_body }}" />
-        <textarea
-          name="class_activity"
-          style="display: none"
-          class="form-control mb-3"
-          rows="6"
-        >
-{{ class_activity }}</textarea
-        >
-        <input type="hidden" name="regenerate_section" value="key_concepts" />
-        <button type="submit" class="btn btn-warning">
-          Regenerate Key Concepts
         </button>
       </form>
       {% endif %} {% if illustration_1_base64 %}

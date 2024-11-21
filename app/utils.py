@@ -3,15 +3,15 @@ import requests
 from io import BytesIO
 from PIL import Image as PILImage
 import base64
+import markdown2
 import fitz  # PyMuPDF
-from reportlab.platypus import ListFlowable, ListItem
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image as ReportLabImage
-from reportlab.lib import colors
-from reportlab.lib.units import inch
 from app import app
 
+
+
+def markdown_to_html(md_text):
+    html_output = markdown2.markdown(md_text)
+    return html_output
 
 # Function to extract text from PDF
 def extract_text_from_pdf(pdf_file: bytes) -> str:
@@ -132,72 +132,6 @@ def generate_image_from_text(text: str) -> BytesIO:
         return BytesIO()
 
 
-# Function to create the PDF from the lesson plan
-def create_pdf(introduction, main_body, class_activity, illustration_1, illustration_2) -> BytesIO:
-
-   
-    buffer = BytesIO()
-    
-   
-    doc = SimpleDocTemplate(buffer, pagesize=letter, rightMargin=72, leftMargin=72, topMargin=72, bottomMargin=18)
-    
-   
-    styles = getSampleStyleSheet()
-    title_style = styles['Title']
-    heading_style = styles['Heading2']
-    bullet_style = styles['Bullet']
-    body_style = styles['BodyText']
-    
-   
-    body_style.alignment = 4  # Justify the text
-    body_style.leading = 14    # Line spacing
-    heading_style.alignment = 1  # Center the headings
-    
-    
-    story = []
-    
-    
-    story.append(Paragraph("Lesson Plan", title_style))
-    story.append(Spacer(1, 24))  # Add space after the title
-    
-    
-    sections = lesson_plan.split("\n\n")
-    
-    for section in sections:
-        if ':' in section:
-            # Separate heading and content
-            heading, content = section.split(":", 1)
-            
-            # Add heading to story with heading style (bold)
-            story.append(Paragraph(f"<b>{heading.strip()}:</b>", heading_style))
-            story.append(Spacer(1, 12))  # Add a small space after each heading
-            
-            # Check for bullet points and format appropriately
-            if "\n" in content.strip():
-                # If content contains line breaks, convert them into bullet points
-                bullet_points = content.strip().split("\n")
-                bullet_items = [ListItem(Paragraph(point.strip(), bullet_style)) for point in bullet_points]
-                story.append(ListFlowable(bullet_items, bulletType='bullet'))
-            else:
-                # Add body text to story with body text style for paragraphs
-                story.append(Paragraph(content.strip(), body_style))
-            
-            story.append(Spacer(1, 12))  # Add a small space after each section of text
-            
-            # Generate and add image based on the content (optional for visualization)
-            image_buffer = generate_image_from_text(content.strip())
-            img = ReportLabImage(image_buffer, width=8 * inch, height=3 * inch)
-            img.hAlign = 'CENTER'  # Center align the image
-            story.append(img)
-            story.append(Spacer(1, 24))  # Add space after the image
-    
-    # Build the PDF document
-    doc.build(story)
-    
-    # Move buffer pointer to start so it can be returned as a response
-    buffer.seek(0)
-    
-    return buffer
 
 
 
@@ -206,7 +140,7 @@ def generate_introduction(extracted_text, key_concepts):
     deep_infra_api_key = app.config['DEEP_INFRA_API_KEY']
     base_url = "https://api.deepinfra.com/v1/openai"
     prompt = f"""
-    Based on the following chapter content and key concepts, generate a well-structured and clear Introduction for a lesson plan on the chapter. The Introduction should:
+    Based on the following chapter content and key concepts, generate a well-structured and clear Introduction for a lesson plan on the chapter and make it engaging and intresting it should be short and precise. The Introduction should:
     - Briefly introduce the subject matter and main themes of the lesson.
     - Explain the key concepts that will be covered in the lesson in a simple and engaging way.
     - Set expectations for what students will learn in the class.
@@ -230,7 +164,7 @@ def generate_main_body(extracted_text, key_concepts):
     deep_infra_api_key = app.config['DEEP_INFRA_API_KEY']
     base_url = "https://api.deepinfra.com/v1/openai"
     prompt = f"""
-    Based on the following chapter content and key concepts, generate the main body of the lesson plan. The Main Body should:
+    Based on the following chapter content and key concepts, generate the main body of the lesson plan and make it engaging precise and clear. The Main Body should:
     - Provide detailed explanations of the key concepts, including definitions and relevant examples.
     - Include step-by-step processes or methodologies for teaching the concepts in a clear, structured manner.
     - Offer suggestions for how the teacher can engage students with real-world examples or historical data related to the chapter.
@@ -255,7 +189,7 @@ def generate_class_activity(extracted_text, key_concepts):
     deep_infra_api_key = app.config['DEEP_INFRA_API_KEY']
     base_url = "https://api.deepinfra.com/v1/openai"
     prompt = f"""
-    Based on the following chapter content and key concepts, generate a class activity for the lesson plan. The activity should:
+    Based on the following chapter content and key concepts, generate a class activity for the lesson plan and make it engaging precise and clear. The activity should:
     - Reinforce learning through hands-on engagement, critical thinking, or interactive participation.
     - Encourage collaboration among students, and foster discussion or problem-solving skills.
     - Be simple, engaging, and achievable within the time frame of a typical class.
@@ -335,60 +269,75 @@ def generate_illustration_descriptions(prompt: str) -> list:
 
 
 def create_html(introduction, main_body, class_activity, illustration_1, illustration_2):
+    introduction_html_output = markdown_to_html(introduction)
+    main_body_html_output = markdown_to_html(main_body)
+    class_activity_html_output = markdown_to_html(class_activity)
     html_content = f"""
-    <html>
-        <head>
-            <style>
-                body {{
-                    font-family: Arial, sans-serif;
-                    margin: 0;
-                    padding: 0;
-                    width: 100%;
-                    height: 100%;
-                }}
-                .container {{
-                    width: 210mm;  /* A4 page width */
-                    height: 297mm; /* A4 page height */
-                    margin: auto;
-                    padding: 20px;
-                    box-sizing: border-box;
-                }}
-                .title {{
-                    font-size: 24px;
-                    font-weight: bold;
-                    text-align: center;
-                    margin-bottom: 20px;
-                }}
-                .content {{
-                    font-size: 14px;
-                    line-height: 1.6;
-                }}
-                .image {{
-                    width: 100%;
-                    height: auto;
-                    margin-top: 20px;
-                    page-break-before: always;
-                }}
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <div class="title">Lesson Plan</div>
-                <div class="content">
-                    <h2>Introduction</h2>
-                    <p>{introduction}</p>
-                    
-                    <h2>Main Body</h2>
-                    <p>{main_body}</p>
-                    
-                    <h2>Class Activity</h2>
-                    <p>{class_activity}</p>
-                </div>
-                
-                <img class="image" src="{illustration_1}" alt="Illustration 1">
-                <img class="image" src="{illustration_2}" alt="Illustration 2">
-            </div>
-        </body>
-    </html>
+   <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your PDF Title</title>
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            line-height: 1.6;
+        }}
+        .content {{
+            max-width: 800px;
+            margin: auto;
+        }}
+        h1 {{
+            text-align: center;
+            color: #333;
+        }}
+        p {{
+            margin-bottom: 15px;
+            text-align: justify;
+        }}
+        .image-container {{
+            text-align: center;
+            margin: 20px 0;
+        }}
+        img {{
+            max-width: 100%;
+            height: auto;
+        }}
+        .section {{
+            margin-bottom: 30px;
+        }}
+         .page-break {{
+            page-break-before: always; /* Forces a page break before the section */
+            page-break-inside: avoid;  /* Prevents a break inside the section */
+        }}
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>Lesson Plan</h1>
+        <div class="section">
+        <h2>Introduction</h2>
+            <p>{introduction_html_output}</p>
+        </div>
+        <div class="section image-container">
+            <img src="{illustration_1}" alt="First Image Description">
+        </div>
+        <div class="section page-break">
+          <h2>Main Body</h2>
+            <p>{main_body_html_output}</p>
+        </div>
+        <div class="section image-container">
+            <img src="{illustration_2}" alt="Second Image Description">
+        </div>
+        <div class="section page-break">
+        <h2>Class Activity</h2>
+            <p>{class_activity_html_output}</p>
+        </div>
+    </div>
+</body>
+</html>
     """
     return html_content
