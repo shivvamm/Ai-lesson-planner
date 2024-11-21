@@ -33,26 +33,21 @@ def extract_key_concepts_route():
         print("hit")
         chapter_name = request.form.get("chapter_name")
         print("got chapter name")
-        # chapter_number = int(chapter_name.split()[1])  # Extract chapter number
-        # pdf_filename = f"fees10{chapter_number}.pdf"
-        # pdf_path = os.path.join(pdf_folder_path, pdf_filename)
+        chapter_number = int(chapter_name.split()[1])  # Extract chapter number
+        pdf_filename = f"fees10{chapter_number}.pdf"
+        pdf_path = os.path.join(pdf_folder_path, pdf_filename)
 
-        # if os.path.exists(pdf_path):
-        #     with open(pdf_path, "rb") as pdf_file:
-        #         extracted_text = extract_text_from_pdf(pdf_file.read())
+        if os.path.exists(pdf_path):
+            with open(pdf_path, "rb") as pdf_file:
+                extracted_text = extract_text_from_pdf(pdf_file.read())
 
-        #     if extracted_text:
-        #         key_concepts = extract_key_concepts(extracted_text, chapter_name)
-        #         # Now, split the key concepts into a list of concepts for HTML rendering
-        #         formatted_key_concepts = key_concepts.split("\n") if key_concepts else []
+            if extracted_text:
+                key_concepts = extract_key_concepts(extracted_text, chapter_name)
+                # Now, split the key concepts into a list of concepts for HTML rendering
+                formatted_key_concepts = key_concepts.split("\n") if key_concepts else []
 
-        #         # Render the template with the extracted text and key concepts
-        #         return render_template('keyconcepts.html', key_concepts=formatted_key_concepts, extracted_text=extracted_text)
-        print("generating ")
-        key_concepts = extract_key_concepts("the text if for chapter 1 ", chapter_name)
-        print("done")
-        formatted_key_concepts = key_concepts.split("\n") if key_concepts else []
-        return render_template('keyconcepts.html', key_concepts=formatted_key_concepts, extracted_text="fdgdf")
+                # Render the template with the extracted text and key concepts
+                return render_template('keyconcepts.html', key_concepts=formatted_key_concepts, extracted_text=extracted_text)
         return render_template('keyconcepts.html', error="PDF not found or unable to extract text.")
     except Exception as e:
         logger.error(f"Error: {e}")
