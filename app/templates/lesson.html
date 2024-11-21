@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lesson Plan</title>
+    <!-- Bootstrap CSS (for styling) -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container my-4">
+      <h1 class="text-center">Generated Lesson Plan</h1>
+
+      <!-- Display generated lesson plan sections -->
+
+      {% if introduction %}
+      <div class="instruction-header">
+        <p>
+          Please review the Introduction section. If needed, regenerate the
+          section.
+        </p>
+      </div>
+      <h3 class="my-4">Introduction</h3>
+      <md id="introduction">{{ introduction }}</md>
+      <form action="/confirm_key_concepts" method="post">
+        <input
+          name="illustration_1"
+          value="{{ illustration_1_base64 }}"
+          type="hidden"
+        />
+        <input
+          name="illustration_2"
+          value="{{ illustration_2_base64 }}"
+          type="hidden"
+        />
+        <textarea
+          name="introduction"
+          style="display: none"
+          id="introduction-section"
+          class="form-control mb-3"
+          rows="6"
+        >
+{{ introduction }}</textarea
+        >
+        <input
+          type="hidden"
+          name="extracted_text"
+          value="{{ extracted_text }}"
+        />
+        <input
+          type="hidden"
+          name="key_concepts"
+          value="{{ key_concepts | join('\n') }}"
+        />
+        <textarea
+          name="class_activity"
+          style="display: none"
+          class="form-control mb-3"
+          rows="6"
+        >
+{{ class_activity }}</textarea
+        >
+        <textarea
+          name="main_body"
+          style="display: none"
+          class="form-control mb-3"
+          rows="6"
+        >
+{{ main_body }}</textarea
+        >
+        <input type="hidden" name="regenerate_section" value="introduction" />
+        <button type="submit" class="btn btn-warning">
+          Regenerate Introduction
+        </button>
+      </form>
+      {% endif %} {% if main_body %}
+      <div class="instruction-header">
+        <p>
+          Please review the Main Body section. If needed, update it and
+          regenerate the section.
+        </p>
+      </div>
+      <h3 class="my-4">Main Body</h3>
+      <md id="main-body">{{ main_body }}</md>
+      <form action="/confirm_key_concepts" method="post">
+        <input
+          name="illustration_1"
+          value="{{ illustration_1_base64 }}"
+          type="hidden"
+        />
+        <input
+          name="illustration_2"
+          value="{{ illustration_2_base64 }}"
+          type="hidden"
+        />
+        <textarea
+          name="main_body"
+          style="display: none"
+          id="main-body-section"
+          class="form-control mb-3"
+          rows="6"
+        >
+{{ main_body }}</textarea
+        >
+        <input
+          type="hidden"
+          name="extracted_text"
+          value="{{ extracted_text }}"
+        />
+        <input
+          type="hidden"
+          name="key_concepts"
+          value="{{ key_concepts | join('\n') }}"
+        />
+        <textarea
+          name="class_activity"
+          style="display: none"
+          class="form-control mb-3"
+          rows="6"
+        >
+{{ class_activity }}</textarea
+        >
+        <textarea
+          name="introduction"
+          style="display: none"
+          class="form-control mb-3"
+          rows="6"
+        >
+{{ introduction }}</textarea
+        >
+        <input type="hidden" name="regenerate_section" value="main_body" />
+        <button type="submit" class="btn btn-warning">
+          Regenerate Main Body
+        </button>
+      </form>
+      {% endif %} {% if class_activity %}
+      <div class="instruction-header">
+        <p>
+          Please review the Class Activity section. If needed, update it and
+          regenerate the section.
+        </p>
+      </div>
+      <h3 class="my-4">Class Activity</h3>
+      <md id="class-activity">{{ class_activity }}</md>
+      <form action="/confirm_key_concepts" method="post">
+        <input
+          name="illustration_1"
+          value="{{ illustration_1_base64 }}"
+          type="hidden"
+        />
+        <input
+          name="illustration_2"
+          value="{{ illustration_2_base64 }}"
+          type="hidden"
+        />
+        <textarea
+          name="class_activity"
+          style="display: none"
+          id="class-activity-section"
+          class="form-control mb-3"
+          rows="6"
+        >
+{{ class_activity }}</textarea
+        >
+        <textarea
+          name="introduction"
+          style="display: none"
+          class="form-control mb-3"
+          rows="6"
+        >
+{{ introduction }}</textarea
+        >
+        <textarea
+          name="main_body"
+          style="display: none"
+          class="form-control mb-3"
+          rows="6"
+        >
+{{ main_body }}</textarea
+        >
+        <input
+          type="hidden"
+          name="extracted_text"
+          value="{{ extracted_text }}"
+        />
+        <input
+          type="hidden"
+          name="key_concepts"
+          value="{{ key_concepts | join('\n') }}"
+        />
+        <input type="hidden" name="regenerate_section" value="class_activity" />
+        <button type="submit" class="btn btn-warning">
+          Regenerate Class Activity
+        </button>
+      </form>
+      {% endif %} {% if key_concepts %}
+      <div class="instruction-header">
+        <p>
+          Please review the Key Concepts section. If needed, update it and
+          regenerate the section.
+        </p>
+      </div>
+      <h3 class="my-4">Key Concepts</h3>
+      <md id="key-concepts">{{ key_concepts | join('\n') }}</md>
+      <form action="/confirm_key_concepts" method="post">
+        <input
+          name="illustration_1"
+          value="{{ illustration_1_base64 }}"
+          type="hidden"
+        />
+        <input
+          name="illustration_2"
+          value="{{ illustration_2_base64 }}"
+          type="hidden"
+        />
+        <textarea
+          name="key_concepts"
+          style="display: none"
+          id="key-concepts-section"
+          class="form-control mb-3"
+          rows="6"
+        >
+{{ key_concepts | join('\n') }}</textarea
+        >
+        <input
+          type="hidden"
+          name="extracted_text"
+          value="{{ extracted_text }}"
+        />
+        <input type="hidden" name="introduction" value="{{ introduction }}" />
+        <input type="hidden" name="main_body" value="{{ main_body }}" />
+        <textarea
+          name="class_activity"
+          style="display: none"
+          class="form-control mb-3"
+          rows="6"
+        >
+{{ class_activity }}</textarea
+        >
+        <input type="hidden" name="regenerate_section" value="key_concepts" />
+        <button type="submit" class="btn btn-warning">
+          Regenerate Key Concepts
+        </button>
+      </form>
+      {% endif %} {% if illustration_1_base64 %}
+      <h3 class="my-4">Illustration 1: Key Concepts</h3>
+      <img
+        src="{{ illustration_1_base64 }}"
+        alt="Illustration 1"
+        class="img-fluid"
+      />
+      {% endif %} {% if illustration_2_base64 %}
+      <h3 class="my-4">Illustration 2: Real-World Application</h3>
+      <img
+        src="{{ illustration_2_base64 }}"
+        alt="Illustration 2"
+        class="img-fluid"
+      />
+      {% endif %} {% if introduction and main_body and class_activity and
+      key_concepts %}
+      <div class="my-4">
+        <form action="/download_lesson_plan" method="post">
+          <textarea
+            name="introduction"
+            style="display: none"
+            class="form-control mb-3"
+            rows="6"
+          >
+{{ introduction }}</textarea
+          >
+          <textarea
+            name="main_body"
+            style="display: none"
+            class="form-control mb-3"
+            rows="6"
+          >
+{{ main_body }}</textarea
+          >
+          <textarea
+            name="class_activity"
+            style="display: none"
+            class="form-control mb-3"
+            rows="6"
+          >
+{{ class_activity }}</textarea
+          >
+          <textarea
+            name="key_concepts"
+            style="display: none"
+            class="form-control mb-3"
+            rows="6"
+          >
+{{ key_concepts | join('\n') }}</textarea
+          >
+          <input
+            name="illustration_1"
+            value="{{ illustration_1_base64 }}"
+            type="hidden"
+          />
+          <input
+            name="illustration_2"
+            value="{{ illustration_2_base64 }}"
+            type="hidden"
+          />
+          <button class="btn btn-primary" type="submit">
+            Download Lesson Plan
+          </button>
+        </form>
+      </div>
+      {% endif %}
+
+      <!-- Display error message if any -->
+      {% if error %}
+      <div class="alert alert-danger my-4">{{ error }}</div>
+      {% endif %}
+    </div>
+    <!-- End container -->
+
+    <!-- Bootstrap JS and Popper (for handling modals, tooltips, etc.) -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+  </body>
+</html>

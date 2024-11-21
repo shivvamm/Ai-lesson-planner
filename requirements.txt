@@ -1,0 +1,6 @@
+Flask
+requests
+PyMuPDF
+reportlab
+Pillow
+streamlit
