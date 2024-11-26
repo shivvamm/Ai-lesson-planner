@@ -114,6 +114,39 @@
         margin-bottom: 4px;
       }
 
+      /* Full-Screen Loader */
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black */
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+
+      .spinner {
+        border: 8px solid #f3f3f3; /* Light grey background */
+        border-top: 8px solid #007bff; /* Blue color */
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
       /* Mobile responsiveness */
       @media (max-width: 768px) {
         .header {
@@ -152,7 +185,11 @@
       <div class="form-container">
         <div class="textarea-container">
           {% if key_concepts %}
-          <form action="/confirm_key_concepts" method="post">
+          <form
+            id="keyConceptForm"
+            action="/confirm_key_concepts"
+            method="post"
+          >
             <label for="key_concepts" class="form-label">Key Concepts</label>
             <textarea
               name="key_concepts"
@@ -187,8 +224,23 @@
       </div>
     </div>
 
+    <!-- Full-Screen Loader (Initially hidden) -->
+    <div class="overlay" id="loader-overlay">
+      <div class="spinner"></div>
+    </div>
+
     <!-- Bootstrap JS (Optional for extra functionality) -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+    <!-- JavaScript to show the loader -->
+    <script>
+      const form = document.getElementById("keyConceptForm");
+      const loaderOverlay = document.getElementById("loader-overlay");
+
+      form.addEventListener("submit", function (event) {
+        loaderOverlay.style.display = "flex";
+      });
+    </script>
   </body>
 </html>

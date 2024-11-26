@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lesson Plan</title>
-    <script src="https://cdn.jsdelivr.net/gh/MarketingPipeline/Markdown-Tag/markdown-tag.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/gh/MarketingPipeline/Markdown-Tag/markdown-tag.js"
+      defer
+    ></script>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -25,7 +28,7 @@
       </div>
       <h3 class="my-4">Introduction</h3>
       <md id="introduction">{{ introduction }}</md>
-      <form action="/confirm_key_concepts" method="post">
+      <form action="/confirm_key_concepts" id="regenerateintro" method="post">
         <input
           name="illustration_1"
           value="{{ illustration_1_base64 }}"
@@ -72,9 +75,16 @@
 {{ main_body }}</textarea
         >
         <input type="hidden" name="regenerate_section" value="introduction" />
-        <button type="submit" class="btn btn-warning">
+        <button type="submit" class="btn btn-warning" id="regen_intro_btn">
           Regenerate Introduction
         </button>
+        <div
+          id="regen_intro_spinner"
+          class="spinner-border text-warning d-none"
+          role="status"
+        >
+          <span class="visually-hidden">Loading...</span>
+        </div>
       </form>
       {% endif %} {% if main_body %}
       <div class="instruction-header">
@@ -132,9 +142,16 @@
 {{ introduction }}</textarea
         >
         <input type="hidden" name="regenerate_section" value="main_body" />
-        <button type="submit" class="btn btn-warning">
+        <button type="submit" class="btn btn-warning" id="regen_main_body_btn">
           Regenerate Main Body
         </button>
+        <div
+          id="regen_main_body_spinner"
+          class="spinner-border text-warning d-none"
+          role="status"
+        >
+          <span class="visually-hidden">Loading...</span>
+        </div>
       </form>
       {% endif %} {% if class_activity %}
       <div class="instruction-header">
@@ -192,24 +209,39 @@
           value="{{ key_concepts | join('\n') }}"
         />
         <input type="hidden" name="regenerate_section" value="class_activity" />
-        <button type="submit" class="btn btn-warning">
+        <button
+          type="submit"
+          class="btn btn-warning"
+          id="regen_class_activity_btn"
+        >
           Regenerate Class Activity
         </button>
+        <div
+          id="regen_class_activity_spinner"
+          class="spinner-border text-warning d-none"
+          role="status"
+        >
+          <span class="visually-hidden">Loading...</span>
+        </div>
       </form>
       {% endif %} {% if illustration_1_base64 %}
       <h3 class="my-4">Illustration 1: Key Concepts</h3>
-      <img
-        src="{{ illustration_1_base64 }}"
-        alt="Illustration 1"
-        class="img-fluid"
-      />
+      <div class="d-flex justify-content-center">
+        <img
+          src="{{ illustration_1_base64 }}"
+          alt="Illustration 1"
+          class="img-fluid"
+        />
+      </div>
       {% endif %} {% if illustration_2_base64 %}
       <h3 class="my-4">Illustration 2: Real-World Application</h3>
-      <img
-        src="{{ illustration_2_base64 }}"
-        alt="Illustration 2"
-        class="img-fluid"
-      />
+      <div class="d-flex justify-content-center">
+        <img
+          src="{{ illustration_2_base64 }}"
+          alt="Illustration 2"
+          class="img-fluid"
+        />
+      </div>
       {% endif %} {% if introduction and main_body and class_activity and
       key_concepts %}
       <div class="my-4">
@@ -220,7 +252,7 @@
             class="form-control mb-3"
             rows="6"
           >
-{{ introduction }}</textarea
+  {{ introduction }}</textarea
           >
           <textarea
             name="main_body"
@@ -228,7 +260,7 @@
             class="form-control mb-3"
             rows="6"
           >
-{{ main_body }}</textarea
+  {{ main_body }}</textarea
           >
           <textarea
             name="class_activity"
@@ -236,7 +268,7 @@
             class="form-control mb-3"
             rows="6"
           >
-{{ class_activity }}</textarea
+  {{ class_activity }}</textarea
           >
           <textarea
             name="key_concepts"
@@ -244,7 +276,7 @@
             class="form-control mb-3"
             rows="6"
           >
-{{ key_concepts | join('\n') }}</textarea
+  {{ key_concepts | join('\n') }}</textarea
           >
           <input
             name="illustration_1"
@@ -267,11 +299,24 @@
       {% if error %}
       <div class="alert alert-danger my-4">{{ error }}</div>
       {% endif %}
-    </div>
-    <!-- End container -->
 
-    <!-- Bootstrap JS and Popper (for handling modals, tooltips, etc.) -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+      <!-- Bootstrap JS and Popper (for handling modals, tooltips, etc.) -->
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+      <script>
+        // Function to show spinner on form submission
+        document.querySelectorAll("form").forEach(function (form) {
+          form.addEventListener("submit", function (event) {
+            const button = event.target.querySelector("button[type=submit]");
+            const spinner = event.target.querySelector(".spinner-border");
+
+            // Show the spinner and disable the button
+            spinner.classList.remove("d-none");
+            button.disabled = true;
+          });
+        });
+      </script>
+    </div>
   </body>
 </html>

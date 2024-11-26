@@ -129,6 +129,26 @@ def confirm_key_concepts():
         return render_template('lesson.html', error="Error during lesson plan generation.")
     
 
+@app.route('/regenerate_sections/', methods=["POST"])
+def regenerate_sections():
+    regenerate_section = request.form.get('regenerate_section')
+    edited_key_concepts = request.form.get("key_concepts") 
+    extracted_text = request.form.get("extracted_text")  
+
+    key_concepts = edited_key_concepts.split("\n")
+    
+    # Initialize variables for each section (default to empty)
+    if regenerate_section == "introduction":
+        introduction = generate_introduction(extracted_text, key_concepts)
+        return jsonify({'introduction': introduction})
+    elif regenerate_section == "main_body":
+        main_body = generate_main_body(extracted_text, key_concepts)
+        return jsonify({'main_body': main_body})
+    elif regenerate_section == "class_activity":
+        class_activity = generate_class_activity(extracted_text, key_concepts)
+        return jsonify({'class_activity': class_activity})
+    return jsonify({'error': 'Unknown section requested'}), 400
+
 
 
 @app.route('/download_lesson_plan', methods=["POST"])

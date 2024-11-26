@@ -140,7 +140,7 @@ def generate_introduction(extracted_text, key_concepts):
     deep_infra_api_key = app.config['DEEP_INFRA_API_KEY']
     base_url = "https://api.deepinfra.com/v1/openai"
     prompt = f"""
-    Based on the following chapter content and key concepts, generate a well-structured and clear Introduction for a lesson plan on the chapter and make it engaging and intresting it should be short and precise. The Introduction should:
+    Based on the following chapter content and key concepts, generate a well-structured and clear Introduction for a lesson plan  on the chapter and make it engaging and intresting it should be short and precise. The Introduction should:
     - Briefly introduce the subject matter and main themes of the lesson.
     - Explain the key concepts that will be covered in the lesson in a simple and engaging way.
     - Set expectations for what students will learn in the class.
@@ -178,7 +178,7 @@ def generate_main_body(extracted_text, key_concepts):
     response = requests.post(
         f"{base_url}/chat/completions",
         headers={"Authorization": f"Bearer {deep_infra_api_key}"},
-        json={"model": "meta-llama/Meta-Llama-3.1-70B-Instruct", "messages": [{"role": "user", "content": prompt}]}
+        json={"model": "meta-llama/Meta-Llama-3.1-70B-Instruct", "messages": [{"role": "user", "content": prompt}],"max_tokens": 1000}
     )
     response.raise_for_status()
     main_body = response.json()['choices'][0]['message']['content'].strip()
@@ -203,7 +203,7 @@ def generate_class_activity(extracted_text, key_concepts):
     response = requests.post(
         f"{base_url}/chat/completions",
         headers={"Authorization": f"Bearer {deep_infra_api_key}"},
-        json={"model": "meta-llama/Meta-Llama-3.1-70B-Instruct", "messages": [{"role": "user", "content": prompt}]}
+        json={"model": "meta-llama/Meta-Llama-3.1-70B-Instruct", "messages": [{"role": "user", "content": prompt}],"max_tokens": 1000}
     )
     response.raise_for_status()
     class_activity = response.json()['choices'][0]['message']['content'].strip()
@@ -224,7 +224,9 @@ def generate_image_from_text(description: str):
     
     # Prepare the payload
     payload = {
-        "prompt": description
+        "prompt": description,
+        "width": 512,
+        "height": 512
     }
     
     # Make the POST request to generate the image
